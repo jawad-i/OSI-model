@@ -1,113 +1,75 @@
-# OSI 7-Layer Network Model Simulation
+# OSI 7-Layer Model Simulation Project
 
-A full implementation of the **OSI 7-Layer Network Architecture** featuring **C-based Client and Server applications** communicating over **real TCP/IP network sockets**, coupled with an interactive **Python User Application** that visualizes the **zig-zag data flow** and reports networking progress **after every two OSI layers**, mirroring modern Linux/Ubuntu kernel networking stacks.
-
-[![C Language](https://img.shields.io/badge/C-C11%20Standard-blue.svg)](https://en.wikipedia.org/wiki/C_(programming_language))
-[![Python](https://img.shields.io/badge/Python-3.x-yellow.svg)](https://python.org)
-[![OSI Model](https://img.shields.io/badge/OSI-7%20Layers-orange.svg)](https://en.wikipedia.org/wiki/OSI_model)
-[![Socket](https://img.shields.io/badge/Socket-TCP%2FIP%20Sockets-brightgreen.svg)](https://en.wikipedia.org/wiki/Network_socket)
-[![Linux/Ubuntu](https://img.shields.io/badge/Linux-Ubuntu%20Stack-red.svg)](https://ubuntu.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
+**Author:** MD Akib Al Jawad  
+**Course:** Computer Networks & Data Communications  
+**Repository:** [https://github.com/jawad-i/OSI-model](https://github.com/jawad-i/OSI-model)  
 
 ---
 
-## Submission & Project Metadata
+## About This Project
 
-- **Student / PC Username:** `MD Akib Al Jawad`
-- **GitHub Repository URL:** [https://github.com/jawad-i/OSI-model](https://github.com/jawad-i/OSI-model)
-- **Reference Article:** [The OSI Model Explained: Key Layers in Computer Networking](https://dev.to/iaadidev/the-osi-model-explained-key-layers-in-computer-networking-53b7)
-- **Base Architecture Reference:** [jsramesh1990 / OSI_Communication_Simulation_Project](https://github.com/jsramesh1990/OSI_Communication_Simulation_Project)
+This is my live project for the Computer Networks course. The goal was to build a hands-on simulation of the complete ISO 7-layer OSI model to see how data actually gets packaged, transmitted across a network, and unpacked on the other side.
+
+Instead of just printing static text, this project combines two core parts:
+1. **C Programs (`client.c` & `server.c`):** Implements real socket communication over TCP (port 8080). The client encapsulates user data from Layer 7 down to Layer 1, sends thousands of raw physical bit characters over the socket, and the server decapsulates it back up from Layer 1 to Layer 7.
+2. **Python Visualizer (`visualizer.py`):** An animated terminal interface built with Rich that visually tracks the classic **zig-zag data flow** (downward on the sender side, across the socket wire, and upward on the receiver side), updating progress checkpoints after every two OSI layers.
 
 ---
 
-## Terminal Verification Screenshot
+## Submission Screenshot
 
-The screenshot below validates the complete live simulation execution, displaying the PC username (`MD Akib Al Jawad`), date and time, GitHub repository, real socket transmission, and the 7-layer progress checkpoints:
+Here is the terminal verification screenshot from my PC showing my username (`MD Akib Al Jawad`), the date, timestamp, and the simulation running end-to-end:
 
 ![OSI Simulation Terminal Execution](screenshots/osi_simulation_screenshot.png)
 
 ---
 
-## Architecture & Zig-Zag Data Flow
+## How It Works: The Zig-Zag Flow
 
-In computer networking, data moves in a **U-shaped "Zig-Zag" pattern**:
-1. **Encapsulation (Sender / Client Stack):** Data begins at the Application layer (Layer 7) and travels **downward** to Layer 1. Each layer prepends its respective header and control metadata.
-2. **Physical Transmission (Network Wire):** The Physical layer transforms frames into raw bitstreams (`0`s and `1`s) transmitted across real TCP/IP sockets (`127.0.0.1:8080`).
-3. **Decapsulation (Receiver / Server Stack):** The bitstream enters at the Physical layer (Layer 1) and travels **upward** to Layer 7. Each layer inspects, validates, and strips its protocol header before passing the payload to the next higher layer.
+In real networking, communication between two hosts doesn't happen in a straight line—it follows a **U-shaped / zig-zag path**:
 
-```mermaid
-flowchart TD
-    subgraph Client["Sender (Client) - Encapsulation (Downward)"]
-        direction TB
-        L7_TX["Layer 7: Application (HTTP/1.1 Envelope)"] --> L6_TX["Layer 6: Presentation (AES-256 Formatting)"]
-        L6_TX -.-> CP1_TX{{"Checkpoint 1: Layers 7 & 6 (25%)"}}
-        CP1_TX --> L5_TX["Layer 5: Session (Session Token & Sync)"]
-        L5_TX --> L4_TX["Layer 4: Transport (TCP Port & Checksum)"]
-        L4_TX -.-> CP2_TX{{"Checkpoint 2: Layers 5 & 4 (50%)"}}
-        CP2_TX --> L3_TX["Layer 3: Network (IPv4 Addressing & Routing)"]
-        L3_TX --> L2_TX["Layer 2: Data Link (MAC Framing & FCS)"]
-        L2_TX -.-> CP3_TX{{"Checkpoint 3: Layers 3 & 2 (75%)"}}
-        CP3_TX --> L1_TX["Layer 1: Physical (Bitstream Encoding)"]
-        L1_TX -.-> CP4_TX{{"Checkpoint 4: Layer 1 Socket Tx (100%)"}}
-    end
-
-    subgraph Wire["Physical Communication Medium"]
-        SOCKET["Real TCP/IP Socket Connection<br/>127.0.0.1:8080<br/>(3,000+ Raw Physical Bit Characters)"]
-    end
-
-    subgraph Server["Receiver (Server) - Decapsulation (Upward)"]
-        direction BT
-        L1_RX["Layer 1: Physical (Bit Decoding & Preamble Strip)"] --> L2_RX["Layer 2: Data Link (FCS Check & MAC Match)"]
-        L2_RX -.-> CP1_RX{{"Checkpoint 1: Layers 1 & 2 (25%)"}}
-        CP1_RX --> L3_RX["Layer 3: Network (IP Validation & TTL Check)"]
-        L3_RX --> L4_RX["Layer 4: Transport (Port Routing & TCP Checksum)"]
-        L4_RX -.-> CP2_RX{{"Checkpoint 2: Layers 3 & 4 (50%)"}}
-        CP2_RX --> L5_RX["Layer 5: Session (Token Verification & Sync)"]
-        L5_RX --> L6_RX["Layer 6: Presentation (AES Decryption & Syntax Decoding)"]
-        L6_RX -.-> CP3_RX{{"Checkpoint 3: Layers 5 & 6 (75%)"}}
-        CP3_RX --> L7_RX["Layer 7: Application (Delivered to End-User)"]
-        L7_RX -.-> CP4_RX{{"Checkpoint 4: Layer 7 Finished (100%)"}}
-    end
-
-    L1_TX ==> SOCKET
-    SOCKET ==> L1_RX
+```text
+       SENDER (Client)                              RECEIVER (Server)
+┌────────────────────────────┐                ┌────────────────────────────┐
+│ Layer 7: Application       │                │ Layer 7: Application       │ ◀── Delivered!
+│ Layer 6: Presentation      │                │ Layer 6: Presentation      │
+├────────────────────────────┤                ├────────────────────────────┤
+│ [Check 1: 28% Done]        │                │ [Check 3: 85% Done]        │
+├────────────────────────────┤                ├────────────────────────────┤
+│ Layer 5: Session           │                │ Layer 5: Session           │
+│ Layer 4: Transport (TCP)   │                │ Layer 4: Transport (TCP)   │
+├────────────────────────────┤                ├────────────────────────────┤
+│ [Check 2: 57% Done]        │                │ [Check 2: 57% Done]        │
+├────────────────────────────┤                ├────────────────────────────┤
+│ Layer 3: Network (IP)      │                │ Layer 3: Network (IP)      │
+│ Layer 2: Data Link (MAC)   │                │ Layer 2: Data Link (MAC)   │
+├────────────────────────────┤                ├────────────────────────────┤
+│ [Check 3: 85% Done]        │                │ [Check 1: 28% Done]        │
+├────────────────────────────┤                ├────────────────────────────┤
+│ Layer 1: Physical (Bits)   │ ──[ SOCKET ]─▶ │ Layer 1: Physical (Bits)   │
+└────────────────────────────┘  (127.0.0.1)   └────────────────────────────┘
+        ▼ Encapsulation (Down)                      ▲ Decapsulation (Up)
 ```
 
----
+1. **Client Encapsulation (L7 &rarr; L1):**  
+   The sender takes your original message (e.g. `"Hello Server!"`) and adds headers as it moves downward:
+   - **Layer 7 (Application):** Formats the application payload `[APP|HTTP/1.1|DATA=...]`.
+   - **Layer 6 (Presentation):** Applies simulated AES-256 formatting `[PRES|ENC=AES256|...]`.
+   - *&rarr; Checkpoint 1 (28%): Layers 7 & 6 completed.*
+   - **Layer 5 (Session):** Adds session token and sync checkpoint `[SESS|ID=0x5A1B|...]`.
+   - **Layer 4 (Transport):** Adds TCP header with source/dest ports (54321 &rarr; 8080) and 16-bit checksum.
+   - *&rarr; Checkpoint 2 (57%): Layers 5 & 4 completed.*
+   - **Layer 3 (Network):** Adds IPv4 routing info (`192.168.1.100` &rarr; `192.168.1.200`, TTL=64).
+   - **Layer 2 (Data Link):** Adds MAC addresses (`00:1A:..` &rarr; `AA:BB:..`) and FCS error-checking CRC.
+   - *&rarr; Checkpoint 3 (85%): Layers 3 & 2 completed.*
+   - **Layer 1 (Physical):** Converts the entire Ethernet frame into raw binary bits (`10101010...`) with a 16-bit preamble.
+   - *&rarr; Checkpoint 4 (100%): Layer 1 completed, ready for wire transmission.*
 
-## Checkpoint Tracking After Every Two OSI Layers
+2. **Real Socket Transmission:**  
+   The client connects to `127.0.0.1:8080` over a real TCP socket and sends the raw physical bitstream.
 
-Similar to production Linux networking kernels (`sk_buff` lifecycle and netfilter hook points), this simulation enforces modular inspection checkpoints after every **two OSI layers**:
-
-### Encapsulation Flow (Downward: 7 → 1)
-| Stage | Layers Processed | Description | Progress |
-| :---: | :--- | :--- | :---: |
-| **Stage 1** | **Layer 7 & 6** | Application payload generated and Presentation syntax formatted / encrypted | `25% [##........]` |
-| **Stage 2** | **Layer 5 & 4** | Session dialog initialized and TCP segments framed with ports & checksum | `50% [#####.....]` |
-| **Stage 3** | **Layer 3 & 2** | IPv4 packet addressed and Ethernet frame sealed with MAC & FCS | `75% [#######...]` |
-| **Stage 4** | **Layer 1** | Frame converted to bitstream with preamble and transmitted via socket | `100% [##########]` |
-
-### Decapsulation Flow (Upward: 1 → 7)
-| Stage | Layers Processed | Description | Progress |
-| :---: | :--- | :--- | :---: |
-| **Stage 1** | **Layer 1 & 2** | Bitstream converted to bytes; Ethernet MAC and FCS CRC checked | `25% [##........]` |
-| **Stage 2** | **Layer 3 & 4** | IPv4 destination verified; TCP port and segment checksum validated | `50% [#####.....]` |
-| **Stage 3** | **Layer 5 & 6** | Session dialogue acknowledged; Presentation payload decrypted | `75% [#######...]` |
-| **Stage 4** | **Layer 7** | Application payload delivered intact to target user application space | `100% [##########]` |
-
----
-
-## 7-Layer Implementation Breakdown
-
-| Layer | Name | C Functions | Envelope / Header Data | Responsibility |
-| :---: | :--- | :--- | :--- | :--- |
-| **7** | **Application** | `layer7_application_send`<br/>`layer7_application_recv` | `[APP\|PROTO=HTTP/1.1\|DATA=...]` | End-user interface, HTTP message creation |
-| **6** | **Presentation** | `layer6_presentation_send`<br/>`layer6_presentation_recv` | `[PRES\|ENC=AES256\|COMPR=OFF\|...]` | Data encryption, compression, formatting |
-| **5** | **Session** | `layer5_session_send`<br/>`layer5_session_recv` | `[SESS\|ID=0x5A1B\|SYNC=TRUE\|...]` | Dialog control, session synchronization token |
-| **4** | **Transport** | `layer4_transport_send`<br/>`layer4_transport_recv` | `[TCP\|SRC_PORT=54321\|DST_PORT=8080\|...]` | Port addressing, TCP checksum, segmenting |
-| **3** | **Network** | `layer3_network_send`<br/>`layer3_network_recv` | `[IP\|VER=4\|SRC=192.168.1.100\|TTL=64\|...]` | Logical routing, IPv4 addressing, TTL checks |
-| **2** | **Data Link** | `layer2_datalink_send`<br/>`layer2_datalink_recv` | `[ETH\|SMAC=...\|DMAC=...\|FCS=0x....]` | MAC addressing, Ethernet framing, FCS CRC |
-| **1** | **Physical** | `layer1_physical_send`<br/>`layer1_physical_recv` | `10101010101010110101101101000101...` | Binary bitstream encoding & Socket wire transmission |
+3. **Server Decapsulation (L1 &rarr; L7):**  
+   The server reads the bitstream from the socket, strips headers in reverse order (L1 &rarr; L7), verifies checksums at each stage, and delivers the original message intact to the application.
 
 ---
 
@@ -116,80 +78,82 @@ Similar to production Linux networking kernels (`sk_buff` lifecycle and netfilte
 ```text
 OSI-model/
 ├── src/
-│   ├── osi_layers.h           # Layer declarations, packet structures & socket headers
-│   ├── osi_layers.c           # 7-layer encapsulation & decapsulation implementations
-│   ├── client.c               # C Client (Sender: Encapsulation & socket transmission)
-│   ├── server.c               # C Server (Receiver: Socket listening & Decapsulation)
-│   └── osi_simulation.c       # Standalone all-in-one C simulation pipeline
+│   ├── osi_layers.h           # Header declarations and cross-platform socket setup
+│   ├── osi_layers.c           # 7-layer encapsulation & decapsulation logic
+│   ├── client.c               # C client: encapsulates L7->L1 and transmits over socket
+│   ├── server.c               # C server: listens on 8080 and decapsulates L1->L7
+│   └── osi_simulation.c       # Standalone all-in-one C simulation
 ├── python/
-│   ├── visualizer.py          # Professional Python Rich Dashboard: Animated zig-zag & stack progress
-│   ├── osi_model_data.py      # Layer data models, educational explanations & header structures
-│   └── capture_screenshot.py  # Automated high-res terminal screenshot generator
+│   ├── visualizer.py          # Rich terminal dashboard with zig-zag animation & menu
+│   ├── osi_model_data.py      # Layer definitions and educational descriptions
+│   └── capture_screenshot.py  # Script used to generate the submission screenshot
 ├── tests/
-│   ├── test_communication.bat # Automated test suite for Windows
-│   └── test_communication.sh  # Automated test suite for Linux/Ubuntu
+│   ├── test_communication.bat # Automated test script for Windows
+│   └── test_communication.sh  # Automated test script for Linux
 ├── screenshots/
 │   └── osi_simulation_screenshot.png # Verification screenshot with username & timestamp
 ├── docs/
-│   └── OSI_Model.md           # Comprehensive OSI theoretical documentation
-├── Makefile                   # Cross-platform build script (Windows / Linux)
-├── README.md                  # Complete project documentation
-└── LICENSE                    # MIT License
+│   └── OSI_Model.md           # Reference notes on the OSI model
+├── Makefile                   # For building with GCC / Make
+└── README.md                  # Project documentation
 ```
 
 ---
 
-## Build & Installation
+## How to Run It
 
 ### Prerequisites
-- **GCC / Clang:** MinGW-w64 on Windows (`gcc.exe`) or GCC on Ubuntu (`sudo apt install build-essential`)
-- **Python:** Python 3.8+ (`python3` or `py`)
-- **Python Libraries:** `rich` (required for dashboard), `pillow` (for screenshot generation)
+- **GCC:** MinGW on Windows or standard GCC on Linux
+- **Python 3.8+** with `rich` and `pillow` installed:
   ```bash
   pip install rich pillow
   ```
-- **Make:** GNU Make (optional)
 
-### 1. Compiling the C Applications
+---
 
-#### On Windows (PowerShell / Command Prompt):
-```powershell
-# Using GCC directly with Winsock
-New-Item -ItemType Directory -Force bin
-gcc -Wall -Wextra -Isrc src/osi_layers.c src/osi_simulation.c -o bin/osi_sim.exe -lws2_32
-gcc -Wall -Wextra -Isrc src/osi_layers.c src/client.c -o bin/osi_client.exe -lws2_32
-gcc -Wall -Wextra -Isrc src/osi_layers.c src/server.c -o bin/osi_server.exe -lws2_32
+### Method 1: The Interactive Python Visualizer (Easiest)
+
+Just run the visualizer directly from your terminal:
+
+```bash
+python python/visualizer.py
 ```
 
-#### On Linux / Ubuntu:
+This opens an interactive menu where you can:
+- **[1] Run Animated Simulation:** Watch the full zig-zag animation with custom messages.
+- **[2] Run Real Socket Communication:** Spawns the compiled C server and client over real TCP sockets.
+- **[3] Explore the 7-Layer Guide:** Quick reference table explaining each layer's role and protocols.
+- **[4] Run Automated Tests:** Runs the full test suite.
+
+You can also run specific modes using command line flags:
 ```bash
-make all
+# Direct animated demo
+python python/visualizer.py --demo
+
+# Demo with custom message and speed
+python python/visualizer.py --demo --message "Testing OSI simulation" --speed 0.2
+
+# Live mode (executes compiled C client + server over socket)
+python python/visualizer.py --live
 ```
 
 ---
 
-## Running the Simulation
+### Method 2: Running C Client and Server in Two Terminals
 
-### Option A: Interactive Python Visualizer (Zig-Zag Flow)
+If you want to see the real C programs communicate across two separate terminal windows:
 
-Run the Python application to see the real-time animated zig-zag diagram and progress updates:
-
+**1. Compile the C files:**
 ```bash
-# Animated demonstration mode
-python python/visualizer.py
+# On Windows (PowerShell):
+gcc -Wall -Wextra -Isrc src/osi_layers.c src/server.c -o bin/osi_server.exe -lws2_32
+gcc -Wall -Wextra -Isrc src/osi_layers.c src/client.c -o bin/osi_client.exe -lws2_32
 
-# Custom message with custom speed
-python python/visualizer.py --message "Testing custom network payload" --speed 0.2
-
-# Live mode: Runs real compiled C client and server binaries over sockets
-python python/visualizer.py --live --message "Hello from MD Akib Al Jawad"
+# On Linux:
+make all
 ```
 
-### Option B: Real Client / Server Socket Communication
-
-Open two terminals:
-
-**Terminal 1 (Start Server / Receiver):**
+**2. Open Terminal 1 (Start the Server):**
 ```bash
 # Windows
 .\bin\osi_server.exe 8080
@@ -198,48 +162,51 @@ Open two terminals:
 ./bin/osi_server 8080
 ```
 
-**Terminal 2 (Start Client / Sender):**
+**3. Open Terminal 2 (Run the Client):**
 ```bash
 # Windows
-.\bin\osi_client.exe "Hello OSI Network! Live Socket Communication" 127.0.0.1 8080
+.\bin\osi_client.exe "Hello from Akib!" 127.0.0.1 8080
 
 # Linux
-./bin/osi_client "Hello OSI Network! Live Socket Communication" 127.0.0.1 8080
-```
-
-### Option C: Standalone C Simulation Pipeline
-
-```bash
-# Windows
-.\bin\osi_sim.exe "Single pipeline test across all 7 layers"
-
-# Linux
-./bin/osi_sim "Single pipeline test across all 7 layers"
+./bin/osi_client "Hello from Akib!" 127.0.0.1 8080
 ```
 
 ---
 
-## Automated Test Suites
-
-Both Windows and Linux automated test scripts are provided to verify standalone simulation, real socket communication, and the Python visualizer:
-
-```powershell
-# On Windows
-tests\test_communication.bat
-```
+### Method 3: Standalone C Simulation (Single Process)
 
 ```bash
-# On Linux / Ubuntu
+# Windows
+.\bin\osi_sim.exe "My test message"
+
+# Linux
+./bin/osi_sim "My test message"
+```
+
+---
+
+### Method 4: Automated Test Scripts
+
+To run all tests in one go:
+
+```bash
+# Windows
+tests\test_communication.bat
+
+# Linux
 chmod +x tests/test_communication.sh
 ./tests/test_communication.sh
 ```
 
 ---
 
-## Author & Acknowledgments
+## References
 
-- **Developed By:** MD Akib Al Jawad
-- **GitHub Repository:** [https://github.com/jawad-i/OSI-model](https://github.com/jawad-i/OSI-model)
-- **Coursework:** Computer Networks & Data Communications / OSI Layer Simulation Project
-- **Standards:** ISO/IEC 7498-1 Open Systems Interconnection Standard
-- **License:** [MIT License](LICENSE)
+- [The OSI Model Explained: Key Layers in Computer Networking](https://dev.to/iaadidev/the-osi-model-explained-key-layers-in-computer-networking-53b7) by Aadi Dev
+- ISO/IEC 7498-1 Open Systems Interconnection Basic Reference Model
+- [Beej's Guide to Network Programming](https://beej.us/guide/bgnet/) for socket programming concepts
+
+---
+
+**Developed by MD Akib Al Jawad**  
+*Feel free to star or fork the repo if you find it helpful!*
