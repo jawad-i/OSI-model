@@ -1,0 +1,74 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build All C Binaries",
+            "type": "shell",
+            "command": "gcc -Wall -Wextra -Isrc src/osi_layers.c src/osi_simulation.c -o bin/osi_sim.exe -lws2_32; gcc -Wall -Wextra -Isrc src/osi_layers.c src/client.c -o bin/osi_client.exe -lws2_32; gcc -Wall -Wextra -Isrc src/osi_layers.c src/server.c -o bin/osi_server.exe -lws2_32",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Run Python Visualizer (Demo)",
+            "type": "shell",
+            "command": "python python/visualizer.py",
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "Run Python Visualizer (Live Sockets)",
+            "type": "shell",
+            "command": "python python/visualizer.py --live --message \"Hello from MD Akib Al Jawad\"",
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "Run Standalone C Simulation",
+            "type": "shell",
+            "command": ".\\bin\\osi_sim.exe \"Testing 7-Layer OSI Simulation in VS Code\"",
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Start C Server (Port 8080)",
+            "type": "shell",
+            "command": ".\\bin\\osi_server.exe 8080",
+            "isBackground": true,
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "Run C Client",
+            "type": "shell",
+            "command": ".\\bin\\osi_client.exe \"Live socket test in VS Code\" 127.0.0.1 8080",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "Run Full Automated Test Suite",
+            "type": "shell",
+            "command": "cmd /c tests\\test_communication.bat",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        }
+    ]
+}

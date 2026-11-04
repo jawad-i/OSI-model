@@ -12,5 +12,4 @@ __pycache__/
 # Temp files
 *.tmp
 temp_repo/
-.vscode/
 .idea/

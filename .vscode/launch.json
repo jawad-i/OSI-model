@@ -1,0 +1,35 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Run Visualizer (Demo)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/python/visualizer.py",
+            "console": "integratedTerminal",
+            "args": ["--speed", "0.2"]
+        },
+        {
+            "name": "Python: Run Visualizer (Live Sockets)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/python/visualizer.py",
+            "console": "integratedTerminal",
+            "args": ["--live", "--message", "Hello from MD Akib Al Jawad in VS Code"]
+        },
+        {
+            "name": "C/C++: Run Standalone Simulation (osi_sim)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/osi_sim.exe",
+            "args": ["Testing OSI 7-Layer in VS Code Debugger"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "gdb.exe",
+            "preLaunchTask": "Build All C Binaries"
+        }
+    ]
+}
