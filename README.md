@@ -16,9 +16,15 @@ Instead of just printing static text, this project combines two core parts:
 
 ---
 
-## Submission Screenshot
+## Submission Screenshots
 
-Here is the terminal verification screenshot from my PC showing my username (`MD Akib Al Jawad`), the date, timestamp, and the simulation running end-to-end:
+### 1. PC Username & Timestamp Verification
+Shows my PC account name (**Md Akib Al jawad** / `akib.jawad.it@gmail.com`) in Windows Settings side-by-side with PowerShell running the simulation and taskbar time:
+
+![PC Username Verification](screenshots/username_verification_screenshot.png)
+
+### 2. Full Simulation Dashboard Execution
+Shows the complete 7-layer visual dashboard running in Windows PowerShell:
 
 ![OSI Simulation Terminal Execution](screenshots/osi_simulation_screenshot.png)
 
