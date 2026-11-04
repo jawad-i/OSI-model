@@ -1,0 +1,16 @@
+# Binaries and object files
+bin/
+*.o
+*.exe
+*.obj
+*.out
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Temp files
+*.tmp
+temp_repo/
+.vscode/
+.idea/
