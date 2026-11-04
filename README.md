@@ -122,7 +122,8 @@ OSI-model/
 │   ├── server.c               # C Server (Receiver: Socket listening & Decapsulation)
 │   └── osi_simulation.c       # Standalone all-in-one C simulation pipeline
 ├── python/
-│   ├── visualizer.py          # Python UI: Animated zig-zag data flow & stack progress
+│   ├── visualizer.py          # Professional Python Rich Dashboard: Animated zig-zag & stack progress
+│   ├── osi_model_data.py      # Layer data models, educational explanations & header structures
 │   └── capture_screenshot.py  # Automated high-res terminal screenshot generator
 ├── tests/
 │   ├── test_communication.bat # Automated test suite for Windows
@@ -142,8 +143,12 @@ OSI-model/
 
 ### Prerequisites
 - **GCC / Clang:** MinGW-w64 on Windows (`gcc.exe`) or GCC on Ubuntu (`sudo apt install build-essential`)
-- **Python:** Python 3.8+ (`python3`)
-- **Make:** GNU Make
+- **Python:** Python 3.8+ (`python3` or `py`)
+- **Python Libraries:** `rich` (required for dashboard), `pillow` (for screenshot generation)
+  ```bash
+  pip install rich pillow
+  ```
+- **Make:** GNU Make (optional)
 
 ### 1. Compiling the C Applications
 

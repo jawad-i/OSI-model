@@ -24,7 +24,7 @@ wait $SERVER_PID
 
 echo ""
 echo "[STEP 4] Testing Python Visualizer (Demo mode)..."
-python3 python/visualizer.py --speed 0.01 --message "Automated Shell Test 3: Python Zig-Zag Visualizer"
+python3 python/visualizer.py --demo --speed 0.01 --message "Automated Shell Test 3: Python Zig-Zag Visualizer"
 
 echo ""
 echo "========================================================================"

@@ -23,7 +23,7 @@ if %ERRORLEVEL% NEQ 0 (
 
 echo.
 echo [STEP 3] Testing Python Visualizer (Demo mode)...
-python python\visualizer.py --speed 0.01 --message "Automated Batch Test 3: Python Zig-Zag Visualizer"
+python python\visualizer.py --demo --speed 0.01 --message "Automated Batch Test 3: Python Zig-Zag Visualizer"
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Python visualizer failed!
     exit /b 1
